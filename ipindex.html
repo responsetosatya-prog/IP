@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Location Tracker</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:800px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.box{
+    background:rgba(255,255,255,.05);
+    padding:15px;
+    border-radius:12px;
+}
+
+.label{
+    color:#94a3b8;
+    font-size:13px;
+}
+
+.value{
+    margin-top:5px;
+    font-size:18px;
+    font-weight:600;
+}
+
+.loading{
+    text-align:center;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h1>🌍 IP Location Tracker</h1>
+
+    <div class="grid">
+        <div class="box">
+            <div class="label">IP Address</div>
+            <div class="value" id="ip">Loading...</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Country</div>
+            <div class="value" id="country">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">State</div>
+            <div class="value" id="state">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">City</div>
+            <div class="value" id="city">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Region</div>
+            <div class="value" id="region">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Postal Code</div>
+            <div class="value" id="postal">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Timezone</div>
+            <div class="value" id="timezone">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">ISP</div>
+            <div class="value" id="isp">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">ASN</div>
+            <div class="value" id="asn">-</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Coordinates</div>
+            <div class="value" id="coords">-</div>
+        </div>
+    </div>
+</div>
+
+<script>
+fetch("https://ipapi.co/json/")
+.then(res => res.json())
+.then(data => {
+
+    document.getElementById("ip").textContent = data.ip;
+    document.getElementById("country").textContent = data.country_name;
+    document.getElementById("state").textContent = data.region;
+    document.getElementById("city").textContent = data.city;
+    document.getElementById("region").textContent = data.region;
+    document.getElementById("postal").textContent = data.postal;
+    document.getElementById("timezone").textContent = data.timezone;
+    document.getElementById("isp").textContent = data.org;
+    document.getElementById("asn").textContent = data.asn;
+    document.getElementById("coords").textContent =
+        data.latitude + ", " + data.longitude;
+
+})
+.catch(() => {
+    alert("Failed to fetch IP information");
+});
+</script>
+
+</body>
+</html>
