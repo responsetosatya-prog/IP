@@ -3,132 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>🌍 IP Tracker</title>
+<title>🌍 IP Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif}
-body{
-background:linear-gradient(135deg,#0f172a,#1e293b);
-min-height:100vh;
-padding:20px;
-color:#fff;
+:root{
+--bg:#070b14;
+--card:rgba(255,255,255,.06);
+--border:rgba(255,255,255,.12);
+--text:#fff;
+--muted:#9ca3af;
+--accent:#60a5fa;
 }
-.container{max-width:1100px;margin:auto}
-h1{text-align:center;margin-bottom:20px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{
+background:
+radial-gradient(circle at top left,#2563eb55,transparent 30%),
+radial-gradient(circle at top right,#7c3aed55,transparent 30%),
+linear-gradient(135deg,#070b14,#111827);
+min-height:100vh;
+color:var(--text);
+overflow-x:hidden;
+}
+.container{max-width:1250px;margin:auto;padding:30px 20px}
+.hero{
+text-align:center;
+padding:40px 0;
+}
+.badge{
+display:inline-block;
+padding:10px 18px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.05);
+border-radius:999px;
+margin-bottom:18px;
+backdrop-filter:blur(12px);
+}
+h1{
+font-size:clamp(2.2rem,5vw,4rem);
+font-weight:800;
+background:linear-gradient(90deg,#60a5fa,#a78bfa);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.subtitle{
+margin-top:12px;
+color:var(--muted);
+max-width:700px;
+margin-inline:auto;
+}
+
+.top-card{
+margin-top:30px;
+padding:25px;
+border-radius:28px;
+background:var(--card);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.ip-big{
+font-size:2rem;
+font-weight:800;
+}
+
+.status{
+padding:10px 16px;
+border-radius:999px;
+background:#16a34a22;
+border:1px solid #16a34a66;
+}
+
 .grid{
+margin-top:25px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:16px;
+gap:18px;
 }
-.box{
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(10px);
-border-radius:16px;
-padding:18px;
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+backdrop-filter:blur(18px);
+border-radius:24px;
+padding:22px;
 cursor:pointer;
-transition:.2s;
+transition:.25s;
+position:relative;
+overflow:hidden;
+}
+
+.card::before{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,#60a5fa10,#a78bfa10);
+opacity:0;
+transition:.25s;
+}
+
+.card:hover::before{opacity:1}
+.card:hover{
+transform:translateY(-6px);
+border-color:#60a5fa66;
+}
+
+.label{
+font-size:.8rem;
+text-transform:uppercase;
+letter-spacing:1px;
+color:var(--muted);
+margin-bottom:10px;
+}
+
+.value{
+font-size:1.2rem;
+font-weight:700;
 word-break:break-word;
 }
-.box:hover{transform:translateY(-3px)}
-.label{font-size:12px;color:#cbd5e1}
-.value{font-size:18px;font-weight:700;margin-top:8px}
+
+.footer{
+margin-top:30px;
+text-align:center;
+color:var(--muted);
+}
+
 #toast{
 position:fixed;
-top:20px;
 right:20px;
-background:#16a34a;
-padding:12px 18px;
-border-radius:10px;
+top:20px;
+padding:14px 18px;
+border-radius:14px;
+background:#111827;
+border:1px solid #60a5fa55;
+backdrop-filter:blur(20px);
 opacity:0;
+transform:translateY(-10px);
 transition:.3s;
 z-index:9999;
 }
-.note{text-align:center;margin-bottom:20px;color:#cbd5e1}
+
+.glow{
+position:fixed;
+width:300px;
+height:300px;
+border-radius:50%;
+background:#3b82f633;
+filter:blur(100px);
+pointer-events:none;
+}
+
+.g1{top:-100px;left:-100px}
+.g2{bottom:-100px;right:-100px}
+
+@media(max-width:700px){
+.ip-big{font-size:1.3rem}
+}
 </style>
 </head>
 <body>
+
+<div class="glow g1"></div>
+<div class="glow g2"></div>
 <div id="toast"></div>
 
 <div class="container">
-<h1>🌍 IP Location Tracker</h1>
-<p class="note">Click any card to copy its value</p>
+
+<div class="hero">
+<div class="badge">⚡ Real-Time IP Intelligence</div>
+<h1>IP Tracker Pro</h1>
+<div class="subtitle">
+Discover your IP address, location, ISP, timezone and network details instantly.
+</div>
+</div>
+
+<div class="top-card">
+<div>
+<div style="color:#9ca3af">Current IP Address</div>
+<div class="ip-big" id="ipMain">Loading...</div>
+</div>
+<div class="status" id="status">Monitoring IP Changes</div>
+</div>
 
 <div class="grid">
-
-<div class="box"><div class="label">IP Address</div><div class="value" id="ip">Loading...</div></div>
-<div class="box"><div class="label">Country</div><div class="value" id="country">-</div></div>
-<div class="box"><div class="label">Region</div><div class="value" id="region">-</div></div>
-<div class="box"><div class="label">City</div><div class="value" id="city">-</div></div>
-<div class="box"><div class="label">Postal Code</div><div class="value" id="postal">-</div></div>
-<div class="box"><div class="label">Timezone</div><div class="value" id="timezone">-</div></div>
-<div class="box"><div class="label">ISP / Organization</div><div class="value" id="org">-</div></div>
-<div class="box"><div class="label">Location (Lat,Lng)</div><div class="value" id="loc">-</div></div>
-
+<div class="card"><div class="label">IP Address</div><div class="value" id="ip">-</div></div>
+<div class="card"><div class="label">Country</div><div class="value" id="country">-</div></div>
+<div class="card"><div class="label">Region / State</div><div class="value" id="region">-</div></div>
+<div class="card"><div class="label">City</div><div class="value" id="city">-</div></div>
+<div class="card"><div class="label">Postal Code</div><div class="value" id="postal">-</div></div>
+<div class="card"><div class="label">Timezone</div><div class="value" id="timezone">-</div></div>
+<div class="card"><div class="label">Organization</div><div class="value" id="org">-</div></div>
+<div class="card"><div class="label">Coordinates</div><div class="value" id="loc">-</div></div>
 </div>
+
+<div class="footer">
+Click any card to copy its value.
+</div>
+
 </div>
 
 <script>
-let currentIP = "";
-let blinkTimer = null;
+let currentIP="";
+let blinker=null;
 
 function toast(msg){
  const t=document.getElementById("toast");
  t.textContent=msg;
  t.style.opacity="1";
- setTimeout(()=>t.style.opacity="0",1500);
+ t.style.transform="translateY(0)";
+ setTimeout(()=>{
+   t.style.opacity="0";
+   t.style.transform="translateY(-10px)";
+ },1800);
 }
 
-async function loadIP(){
+async function loadData(){
  try{
-   const res = await fetch("https://ipinfo.io/json");
-   const data = await res.json();
+  const res=await fetch("https://ipinfo.io/json");
+  const data=await res.json();
 
-   document.getElementById("ip").textContent = data.ip || "-";
-   document.getElementById("country").textContent = data.country || "-";
-   document.getElementById("region").textContent = data.region || "-";
-   document.getElementById("city").textContent = data.city || "-";
-   document.getElementById("postal").textContent = data.postal || "-";
-   document.getElementById("timezone").textContent = data.timezone || "-";
-   document.getElementById("org").textContent = data.org || "-";
-   document.getElementById("loc").textContent = data.loc || "-";
+  const fields={
+   ip:data.ip,
+   country:data.country,
+   region:data.region,
+   city:data.city,
+   postal:data.postal,
+   timezone:data.timezone,
+   org:data.org,
+   loc:data.loc
+  };
 
-   if(!currentIP){
-      currentIP = data.ip;
-   }else if(data.ip !== currentIP){
-      currentIP = data.ip;
-      toast("IP Address Changed");
-      startBlink();
-      loadIP();
-   }
+  for(const id in fields){
+   const el=document.getElementById(id);
+   if(el) el.textContent=fields[id]||"-";
+  }
+
+  document.getElementById("ipMain").textContent=data.ip||"-";
+
+  if(!currentIP){
+    currentIP=data.ip;
+  }else if(data.ip!==currentIP){
+    currentIP=data.ip;
+    toast("IP Address Changed");
+    startBlink();
+  }
 
  }catch(e){
-   document.getElementById("ip").textContent="API Error";
+  document.getElementById("ipMain").textContent="API Error";
  }
 }
 
 function startBlink(){
- if(blinkTimer) return;
-
- let state=true;
-
- blinkTimer=setInterval(()=>{
-   document.title = state ? "⚠ IP CHANGED ⚠" : "🌍 IP Tracker";
-   state=!state;
+ if(blinker) return;
+ let x=true;
+ blinker=setInterval(()=>{
+   document.title=x?"⚠ IP CHANGED":"🌍 IP Tracker Pro";
+   x=!x;
  },700);
 }
 
-document.addEventListener("click",async(e)=>{
- const box=e.target.closest(".box");
- if(!box) return;
-
- const value=box.querySelector(".value").textContent;
- try{
-   await navigator.clipboard.writeText(value);
-   toast("Copied: "+value);
- }catch(err){}
+document.querySelectorAll(".card").forEach(card=>{
+ card.addEventListener("click",async()=>{
+   const value=card.querySelector(".value").textContent;
+   try{
+    await navigator.clipboard.writeText(value);
+    toast("Copied: "+value);
+   }catch(e){}
+ });
 });
 
-loadIP();
-setInterval(loadIP,5000);
+loadData();
+setInterval(loadData,5000);
 </script>
 </body>
 </html>
