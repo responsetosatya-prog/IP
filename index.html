@@ -2,151 +2,133 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IP Location Tracker</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🌍 IP Tracker</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Inter,Arial,sans-serif;
-}
-
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif}
 body{
-    min-height:100vh;
-    background:linear-gradient(135deg,#0f172a,#1e293b);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    padding:20px;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+min-height:100vh;
+padding:20px;
+color:#fff;
 }
-
-.card{
-    width:100%;
-    max-width:800px;
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
-    padding:30px;
-    box-shadow:0 10px 40px rgba(0,0,0,.3);
-}
-
-h1{
-    text-align:center;
-    margin-bottom:25px;
-}
-
+.container{max-width:1100px;margin:auto}
+h1{text-align:center;margin-bottom:20px}
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:16px;
 }
-
 .box{
-    background:rgba(255,255,255,.05);
-    padding:15px;
-    border-radius:12px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+border-radius:16px;
+padding:18px;
+cursor:pointer;
+transition:.2s;
+word-break:break-word;
 }
-
-.label{
-    color:#94a3b8;
-    font-size:13px;
+.box:hover{transform:translateY(-3px)}
+.label{font-size:12px;color:#cbd5e1}
+.value{font-size:18px;font-weight:700;margin-top:8px}
+#toast{
+position:fixed;
+top:20px;
+right:20px;
+background:#16a34a;
+padding:12px 18px;
+border-radius:10px;
+opacity:0;
+transition:.3s;
+z-index:9999;
 }
-
-.value{
-    margin-top:5px;
-    font-size:18px;
-    font-weight:600;
-}
-
-.loading{
-    text-align:center;
-    margin-top:20px;
-}
+.note{text-align:center;margin-bottom:20px;color:#cbd5e1}
 </style>
 </head>
 <body>
+<div id="toast"></div>
 
-<div class="card">
-    <h1>🌍 IP Location Tracker</h1>
+<div class="container">
+<h1>🌍 IP Location Tracker</h1>
+<p class="note">Click any card to copy its value</p>
 
-    <div class="grid">
-        <div class="box">
-            <div class="label">IP Address</div>
-            <div class="value" id="ip">Loading...</div>
-        </div>
+<div class="grid">
 
-        <div class="box">
-            <div class="label">Country</div>
-            <div class="value" id="country">-</div>
-        </div>
+<div class="box"><div class="label">IP Address</div><div class="value" id="ip">Loading...</div></div>
+<div class="box"><div class="label">Country</div><div class="value" id="country">-</div></div>
+<div class="box"><div class="label">Region</div><div class="value" id="region">-</div></div>
+<div class="box"><div class="label">City</div><div class="value" id="city">-</div></div>
+<div class="box"><div class="label">Postal Code</div><div class="value" id="postal">-</div></div>
+<div class="box"><div class="label">Timezone</div><div class="value" id="timezone">-</div></div>
+<div class="box"><div class="label">ISP / Organization</div><div class="value" id="org">-</div></div>
+<div class="box"><div class="label">Location (Lat,Lng)</div><div class="value" id="loc">-</div></div>
 
-        <div class="box">
-            <div class="label">State</div>
-            <div class="value" id="state">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">City</div>
-            <div class="value" id="city">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">Region</div>
-            <div class="value" id="region">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">Postal Code</div>
-            <div class="value" id="postal">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">Timezone</div>
-            <div class="value" id="timezone">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">ISP</div>
-            <div class="value" id="isp">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">ASN</div>
-            <div class="value" id="asn">-</div>
-        </div>
-
-        <div class="box">
-            <div class="label">Coordinates</div>
-            <div class="value" id="coords">-</div>
-        </div>
-    </div>
+</div>
 </div>
 
 <script>
-fetch("https://ipapi.co/json/")
-.then(res => res.json())
-.then(data => {
+let currentIP = "";
+let blinkTimer = null;
 
-    document.getElementById("ip").textContent = data.ip;
-    document.getElementById("country").textContent = data.country_name;
-    document.getElementById("state").textContent = data.region;
-    document.getElementById("city").textContent = data.city;
-    document.getElementById("region").textContent = data.region;
-    document.getElementById("postal").textContent = data.postal;
-    document.getElementById("timezone").textContent = data.timezone;
-    document.getElementById("isp").textContent = data.org;
-    document.getElementById("asn").textContent = data.asn;
-    document.getElementById("coords").textContent =
-        data.latitude + ", " + data.longitude;
+function toast(msg){
+ const t=document.getElementById("toast");
+ t.textContent=msg;
+ t.style.opacity="1";
+ setTimeout(()=>t.style.opacity="0",1500);
+}
 
-})
-.catch(() => {
-    alert("Failed to fetch IP information");
+async function loadIP(){
+ try{
+   const res = await fetch("https://ipinfo.io/json");
+   const data = await res.json();
+
+   document.getElementById("ip").textContent = data.ip || "-";
+   document.getElementById("country").textContent = data.country || "-";
+   document.getElementById("region").textContent = data.region || "-";
+   document.getElementById("city").textContent = data.city || "-";
+   document.getElementById("postal").textContent = data.postal || "-";
+   document.getElementById("timezone").textContent = data.timezone || "-";
+   document.getElementById("org").textContent = data.org || "-";
+   document.getElementById("loc").textContent = data.loc || "-";
+
+   if(!currentIP){
+      currentIP = data.ip;
+   }else if(data.ip !== currentIP){
+      currentIP = data.ip;
+      toast("IP Address Changed");
+      startBlink();
+      loadIP();
+   }
+
+ }catch(e){
+   document.getElementById("ip").textContent="API Error";
+ }
+}
+
+function startBlink(){
+ if(blinkTimer) return;
+
+ let state=true;
+
+ blinkTimer=setInterval(()=>{
+   document.title = state ? "⚠ IP CHANGED ⚠" : "🌍 IP Tracker";
+   state=!state;
+ },700);
+}
+
+document.addEventListener("click",async(e)=>{
+ const box=e.target.closest(".box");
+ if(!box) return;
+
+ const value=box.querySelector(".value").textContent;
+ try{
+   await navigator.clipboard.writeText(value);
+   toast("Copied: "+value);
+ }catch(err){}
 });
-</script>
 
+loadIP();
+setInterval(loadIP,5000);
+</script>
 </body>
 </html>
