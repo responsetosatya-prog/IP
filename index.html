@@ -114,6 +114,7 @@
       font-weight: 500;
       font-size: 0.9rem;
       white-space: nowrap;
+      transition: all 0.3s ease;
     }
 
     .grid {
@@ -194,6 +195,17 @@
       font-weight: 500;
       color: white;
       box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+
+    /* Blink animation for the status badge when IP changes */
+    @keyframes blinkWarning {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .status.blink {
+      animation: blinkWarning 0.8s ease-in-out infinite;
     }
 
     .glow {
@@ -215,13 +227,6 @@
       .top-card { flex-direction: column; align-items: flex-start; }
       .status { white-space: normal; }
       .brand-logo { height: 38px; }
-    }
-
-    .copy-hint {
-      opacity: 0.5;
-      font-size: 0.7rem;
-      margin-left: 6px;
-      font-weight: 400;
     }
   </style>
 </head>
@@ -250,7 +255,7 @@
     <!-- main IP card – click to copy -->
     <div class="top-card" id="ipMainCard">
       <div>
-        <div style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 4px;">IP Address</div>
+        <div style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 4px;">Current IP Address</div>
         <div class="ip-big" id="ipMain">Loading…</div>
       </div>
       <div class="status" id="status">Monitoring IP Changes</div>
@@ -296,7 +301,7 @@
         toastEl._timeout = setTimeout(() => {
           toastEl.style.opacity = '0';
           toastEl.style.transform = 'translateY(-10px)';
-        }, 2000);
+        }, 2500);
       }
 
       // copy to clipboard
@@ -324,22 +329,30 @@
         }
       }
 
-      // start blinking title on IP change
+      // start blinking title AND status badge on IP change
       function startBlink() {
+        // Blink the status badge
+        statusEl.classList.add('blink');
+        
+        // Blink the tab title
         if (blinker) return;
         let state = true;
         blinker = setInterval(() => {
-          document.title = state ? '⚠ IP CHANGED' : '🤦🏻‍♂️ Brooo';
+          document.title = state ? '⚠️ IP CHANGED' : '⚠️ IP CHANGED';
           state = !state;
         }, 700);
       }
 
-      // stop blinking (called after fresh IP matches)
+      // stop blinking (called after fresh IP matches or manually)
       function stopBlink() {
+        // Remove blink class from status
+        statusEl.classList.remove('blink');
+        
+        // Stop title blinking
         if (blinker) {
           clearInterval(blinker);
           blinker = null;
-          document.title = 'IP Tracker';
+          document.title = 'IP Tracker · Survey Captures';
         }
       }
 
@@ -361,11 +374,11 @@
         if (currentIP && ip !== currentIP) {
           currentIP = ip;
           ipChangedFlag = true;
-          statusEl.innerHTML = 'IP changed!';
+          statusEl.innerHTML = '⚠️ IP changed!';
           statusEl.style.background = '#b91c1c33';
           statusEl.style.borderColor = '#b91c1c66';
-          showToast('⚠️ IP Address Changed');
-          startBlink();
+          showToast('⚠️ IP Address Changed!');
+          startBlink(); // Start blinking on change
         } else {
           // first load or no change
           if (!currentIP) {
@@ -402,6 +415,8 @@
           statusEl.innerHTML = '⚠️ offline';
           statusEl.style.background = '#92400e33';
           statusEl.style.borderColor = '#92400e66';
+          // Don't blink on API error, just show offline
+          stopBlink();
         }
       }
 
