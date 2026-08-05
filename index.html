@@ -1,286 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP Tracker · Survey Capture's</title>
+  <link rel="icon" type="image/png" href="https://i.ibb.co/Y47MFfC9/image-2.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
 
-<title>IP Tracker</title>
+    :root {
+      --bg: #070b14;
+      --card: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #ffffff;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+    }
 
-<link rel="icon" type="image/png" href="https://i.ibb.co/Y47MFfC9/image-2.png">
+    body {
+      background:
+        radial-gradient(circle at top left, #2563eb55, transparent 30%),
+        radial-gradient(circle at top right, #7c3aed55, transparent 30%),
+        linear-gradient(135deg, #070b14, #111827);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+      padding: 20px 0;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 0 20px 20px;
+    }
 
-<style>
-:root{
---bg:#070b14;
---card:rgba(255,255,255,.06);
---border:rgba(255,255,255,.12);
---text:#fff;
---muted:#9ca3af;
---accent:#60a5fa;
-}
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{
-background:
-radial-gradient(circle at top left,#2563eb55,transparent 30%),
-radial-gradient(circle at top right,#7c3aed55,transparent 30%),
-linear-gradient(135deg,#070b14,#111827);
-min-height:100vh;
-color:var(--text);
-overflow-x:hidden;
-}
-.container{max-width:1250px;margin:auto;padding:30px 20px}
-.hero{
-text-align:center;
-padding:40px 0;
-}
-.badge{
-display:inline-block;
-padding:10px 18px;
-border:1px solid var(--border);
-background:rgba(255,255,255,.05);
-border-radius:999px;
-margin-bottom:18px;
-backdrop-filter:blur(12px);
-}
-h1{
-font-size:clamp(2.2rem,5vw,4rem);
-font-weight:800;
-background:linear-gradient(90deg,#60a5fa,#a78bfa);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-.subtitle{
-margin-top:12px;
-color:var(--muted);
-max-width:700px;
-margin-inline:auto;
-}
+    .hero {
+      text-align: center;
+      padding: 20px 0 10px;
+    }
 
-.top-card{
-margin-top:30px;
-padding:25px;
-border-radius:28px;
-background:var(--card);
-backdrop-filter:blur(20px);
-border:1px solid var(--border);
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:20px;
-flex-wrap:wrap;
-}
+    .badge {
+      display: inline-block;
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(12px);
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
 
-.ip-big{
-font-size:2rem;
-font-weight:800;
-}
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-.status{
-padding:10px 16px;
-border-radius:999px;
-background:#16a34a22;
-border:1px solid #16a34a66;
-}
+    .subtitle {
+      margin-top: 12px;
+      color: var(--muted);
+      max-width: 700px;
+      margin-inline: auto;
+      font-weight: 300;
+    }
 
-.grid{
-margin-top:25px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:18px;
-}
+    .top-card {
+      margin-top: 30px;
+      padding: 20px 28px;
+      border-radius: 28px;
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      transition: 0.2s;
+      cursor: pointer;
+    }
 
-.card{
-background:var(--card);
-border:1px solid var(--border);
-backdrop-filter:blur(18px);
-border-radius:24px;
-padding:22px;
-cursor:pointer;
-transition:.25s;
-position:relative;
-overflow:hidden;
-}
+    .top-card:hover {
+      border-color: #60a5fa55;
+    }
 
-.card::before{
-content:'';
-position:absolute;
-inset:0;
-background:linear-gradient(135deg,#60a5fa10,#a78bfa10);
-opacity:0;
-transition:.25s;
-}
+    .ip-big {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
 
-.card:hover::before{opacity:1}
-.card:hover{
-transform:translateY(-6px);
-border-color:#60a5fa66;
-}
+    .status {
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: #16a34a22;
+      border: 1px solid #16a34a66;
+      font-weight: 500;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
 
-.label{
-font-size:.8rem;
-text-transform:uppercase;
-letter-spacing:1px;
-color:var(--muted);
-margin-bottom:10px;
-}
+    .grid {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
 
-.value{
-font-size:1.2rem;
-font-weight:700;
-word-break:break-word;
-}
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      padding: 20px 22px;
+      cursor: pointer;
+      transition: 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
 
-.footer{
-margin-top:30px;
-text-align:center;
-color:var(--muted);
-}
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #60a5fa10, #a78bfa10);
+      opacity: 0;
+      transition: 0.25s;
+    }
 
-#toast{
-position:fixed;
-right:20px;
-top:20px;
-padding:14px 18px;
-border-radius:14px;
-background:#111827;
-border:1px solid #60a5fa55;
-backdrop-filter:blur(20px);
-opacity:0;
-transform:translateY(-10px);
-transition:.3s;
-z-index:9999;
-}
+    .card:hover::before {
+      opacity: 1;
+    }
 
-.glow{
-position:fixed;
-width:300px;
-height:300px;
-border-radius:50%;
-background:#3b82f633;
-filter:blur(100px);
-pointer-events:none;
-}
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #60a5fa66;
+    }
 
-.g1{top:-100px;left:-100px}
-.g2{bottom:-100px;right:-100px}
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
 
-@media(max-width:700px){
-.ip-big{font-size:1.3rem}
-}
-</style>
+    .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      letter-spacing: 0.3px;
+    }
+
+    #toast {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      padding: 14px 22px;
+      border-radius: 16px;
+      background: #111827ee;
+      border: 1px solid #60a5fa66;
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: 0.3s ease;
+      z-index: 9999;
+      font-weight: 500;
+      color: white;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+
+    .glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: #3b82f633;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .g1 { top: -100px; left: -100px; }
+    .g2 { bottom: -100px; right: -100px; }
+
+    @media (max-width: 700px) {
+      .ip-big { font-size: 1.5rem; }
+      .top-card { flex-direction: column; align-items: flex-start; }
+      .status { white-space: normal; }
+    }
+
+    /* tiny helper */
+    .copy-hint {
+      opacity: 0.5;
+      font-size: 0.7rem;
+      margin-left: 6px;
+      font-weight: 400;
+    }
+  </style>
 </head>
 <body>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div id="toast"></div>
 
-<div class="glow g1"></div>
-<div class="glow g2"></div>
-<div id="toast"></div>
+  <div class="container">
+    <div class="hero">
+      <div class="badge">📡 Survey Capture's</div>
+      <h1>IP Tracker</h1>
+      <div class="subtitle">
+        IP Tracker notifies you if your IP address changes while you're using a proxy.
+      </div>
+    </div>
 
-<div class="container">
+    <!-- main IP card – click to copy -->
+    <div class="top-card" id="ipMainCard">
+      <div>
+        <div style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 4px;">Current IP Address</div>
+        <div class="ip-big" id="ipMain">Loading…</div>
+      </div>
+      <div class="status" id="status">🟢 Monitoring IP Changes</div>
+    </div>
 
-<div class="hero">
-<div class="badge">Survey Capture's</div>
-<h1>IP Tracker</h1>
-<div class="subtitle">
-IP Tracker notifies you if your IP address will change while you're using a proxy.
-</div>
-</div>
+    <!-- grid: only country, region, city, postal -->
+    <div class="grid">
+      <div class="card" data-copy="country"><div class="label">Country</div><div class="value" id="country">-</div></div>
+      <div class="card" data-copy="region"><div class="label">Region / State</div><div class="value" id="region">-</div></div>
+      <div class="card" data-copy="city"><div class="label">City</div><div class="value" id="city">-</div></div>
+      <div class="card" data-copy="postal"><div class="label">Postal Code</div><div class="value" id="postal">-</div></div>
+    </div>
 
-<div class="top-card">
-<div>
-<div style="color:#9ca3af">Current IP Address</div>
-<div class="ip-big" id="ipMain">Loading...</div>
-</div>
-<div class="status" id="status">Monitoring IP Changes</div>
-</div>
+    <div class="footer">
+      Made by Satyam (Sr. Research Associate)
+    </div>
+  </div>
 
-<div class="grid">
-<div class="card"><div class="label">IP Address</div><div class="value" id="ip">-</div></div>
-<div class="card"><div class="label">Country</div><div class="value" id="country">-</div></div>
-<div class="card"><div class="label">Region / State</div><div class="value" id="region">-</div></div>
-<div class="card"><div class="label">City</div><div class="value" id="city">-</div></div>
-<div class="card"><div class="label">Postal Code</div><div class="value" id="postal">-</div></div>
-<div class="card"><div class="label">Timezone</div><div class="value" id="timezone">-</div></div>
-<div class="card"><div class="label">Organization</div><div class="value" id="org">-</div></div>
-<div class="card"><div class="label">Coordinates</div><div class="value" id="loc">-</div></div>
-</div>
+  <script>
+    (function() {
+      "use strict";
 
-<div class="footer">
-Made by Satyam (Sr. Research Associate)
-</div>
+      let currentIP = "";
+      let blinker = null;
+      let ipChangedFlag = false;
 
-</div>
+      const toastEl = document.getElementById('toast');
+      const ipMainEl = document.getElementById('ipMain');
+      const statusEl = document.getElementById('status');
 
-<script>
-let currentIP="";
-let blinker=null;
+      // DOM refs for the four fields we keep
+      const countryEl = document.getElementById('country');
+      const regionEl = document.getElementById('region');
+      const cityEl = document.getElementById('city');
+      const postalEl = document.getElementById('postal');
 
-function toast(msg){
- const t=document.getElementById("toast");
- t.textContent=msg;
- t.style.opacity="1";
- t.style.transform="translateY(0)";
- setTimeout(()=>{
-   t.style.opacity="0";
-   t.style.transform="translateY(-10px)";
- },1800);
-}
+      // helper: toast message
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.style.opacity = '1';
+        toastEl.style.transform = 'translateY(0)';
+        clearTimeout(toastEl._timeout);
+        toastEl._timeout = setTimeout(() => {
+          toastEl.style.opacity = '0';
+          toastEl.style.transform = 'translateY(-10px)';
+        }, 2000);
+      }
 
-async function loadData(){
- try{
-  const res=await fetch("https://ipinfo.io/json");
-  const data=await res.json();
+      // copy to clipboard
+      async function copyText(text, label) {
+        if (!text || text === '-' || text === 'Loading…') {
+          showToast('Nothing to copy');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast(`📋 Copied: ${text}`);
+        } catch (_) {
+          // fallback
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            showToast(`📋 Copied: ${text}`);
+          } catch (__) {
+            showToast('Copy failed');
+          }
+          ta.remove();
+        }
+      }
 
-  const fields={
-   ip:data.ip,
-   country:data.country,
-   region:data.region,
-   city:data.city,
-   postal:data.postal,
-   timezone:data.timezone,
-   org:data.org,
-   loc:data.loc
-  };
+      // start blinking title on IP change
+      function startBlink() {
+        if (blinker) return;
+        let state = true;
+        blinker = setInterval(() => {
+          document.title = state ? '⚠ IP CHANGED' : '🤦🏻‍♂️ Brooo';
+          state = !state;
+        }, 700);
+      }
 
-  for(const id in fields){
-   const el=document.getElementById(id);
-   if(el) el.textContent=fields[id]||"-";
-  }
+      // stop blinking (called after fresh IP matches)
+      function stopBlink() {
+        if (blinker) {
+          clearInterval(blinker);
+          blinker = null;
+          document.title = 'IP Tracker · Survey Capture\'s';
+        }
+      }
 
-  document.getElementById("ipMain").textContent=data.ip||"-";
+      // update UI fields from data
+      function updateUI(data) {
+        const ip = data.ip || '-';
+        const country = data.country || '-';
+        const region = data.region || '-';
+        const city = data.city || '-';
+        const postal = data.postal || '-';
 
-  if(!currentIP){
-    currentIP=data.ip;
-  }else if(data.ip!==currentIP){
-    currentIP=data.ip;
-    toast("IP Address Changed");
-    startBlink();
-  }
+        ipMainEl.textContent = ip;
+        countryEl.textContent = country;
+        regionEl.textContent = region;
+        cityEl.textContent = city;
+        postalEl.textContent = postal;
 
- }catch(e){
-  document.getElementById("ipMain").textContent="API Error";
- }
-}
+        // if IP changed (and we already had a previous IP)
+        if (currentIP && ip !== currentIP) {
+          currentIP = ip;
+          ipChangedFlag = true;
+          statusEl.innerHTML = '🔴 IP changed!';
+          statusEl.style.background = '#b91c1c33';
+          statusEl.style.borderColor = '#b91c1c66';
+          showToast('⚠️ IP Address Changed');
+          startBlink();
+        } else {
+          // first load or no change
+          if (!currentIP) {
+            currentIP = ip;
+          }
+          // if we were in changed state but now IP matches (should not happen often, but for safety)
+          if (ipChangedFlag && ip === currentIP) {
+            ipChangedFlag = false;
+            statusEl.innerHTML = '🟢 Monitoring IP Changes';
+            statusEl.style.background = '#16a34a22';
+            statusEl.style.borderColor = '#16a34a66';
+            stopBlink();
+          }
+          // ensure status is correct if no change
+          if (!ipChangedFlag) {
+            statusEl.innerHTML = '🟢 Monitoring IP Changes';
+            statusEl.style.background = '#16a34a22';
+            statusEl.style.borderColor = '#16a34a66';
+          }
+        }
+      }
 
-function startBlink(){
- if(blinker) return;
- let x=true;
- blinker=setInterval(()=>{
-   document.title=x?"⚠ IP CHANGED":"🤦🏻‍♂️ Brooo";
-   x=!x;
- },700);
-}
+      // fetch data from ipinfo.io
+      async function fetchIPData() {
+        try {
+          const resp = await fetch('https://ipinfo.io/json');
+          if (!resp.ok) throw new Error('API error');
+          const data = await resp.json();
+          // ensure we have ip
+          if (!data.ip) throw new Error('no ip');
+          updateUI(data);
+        } catch (err) {
+          ipMainEl.textContent = '⚠️ API error';
+          statusEl.innerHTML = '⚠️ offline';
+          statusEl.style.background = '#92400e33';
+          statusEl.style.borderColor = '#92400e66';
+        }
+      }
 
-document.querySelectorAll(".card").forEach(card=>{
- card.addEventListener("click",async()=>{
-   const value=card.querySelector(".value").textContent;
-   try{
-    await navigator.clipboard.writeText(value);
-    toast("Copied: "+value);
-   }catch(e){}
- });
-});
+      // --- click to copy: top IP card ---
+      document.getElementById('ipMainCard').addEventListener('click', function(e) {
+        const ipText = ipMainEl.textContent;
+        if (ipText && ipText !== 'Loading…' && ipText !== '⚠️ API error') {
+          copyText(ipText, 'IP');
+        } else {
+          showToast('No IP to copy');
+        }
+      });
 
-loadData();
-setInterval(loadData,5000);
-</script>
+      // --- click to copy: all cards (4 cards) ---
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          const valueEl = this.querySelector('.value');
+          if (!valueEl) return;
+          const text = valueEl.textContent;
+          const label = this.querySelector('.label')?.textContent || 'value';
+          copyText(text, label);
+        });
+      });
+
+      // --- initial load + periodic refresh ---
+      fetchIPData();
+      // check every 5 seconds
+      setInterval(fetchIPData, 5000);
+
+      // also re-check visibility (just in case)
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          fetchIPData();
+        }
+      });
+
+      // on page load, ensure title
+      document.title = 'IP Tracker · Survey Capture\'s';
+    })();
+  </script>
 </body>
 </html>
